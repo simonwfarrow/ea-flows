@@ -1,10 +1,15 @@
 {
   "name": "@electronic-architect/ea-flows",
   "version": "1.0.0",
-  "description": "Arhcitecture flow module for electronic-architect",
-  "main": "index.js",
+  "type": "module",
+  "module": "src/index.js",
+  "description": "Mirco-module flow for electronic architect",
+  "main": "src/index.js",
+  "types": "src/@types/fdTypes.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run test-ts-unit",
+    "test-ts-unit": "ts-node ./node_modules/mocha/bin/mocha  --loader=ts-node/esm --extension ts 'src/**/*.spec.ts' --recursive",
+    "build": "npx tsc"
   },
   "repository": {
     "type": "git",
@@ -12,8 +17,9 @@
   },
   "keywords": [
     "architecture",
-    "sequence",
-    "diagrams",
+    "flows",
+    "c4",
+    "plantuml",
     "electronic-architect"
   ],
   "author": "simonwfarrow",
@@ -21,5 +27,23 @@
   "bugs": {
     "url": "https://github.com/simonwfarrow/ea-flows/issues"
   },
-  "homepage": "https://github.com/simonwfarrow/ea-flows#readme"
+  "homepage": "https://github.com/simonwfarrow/ea-flows#readme",
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.1",
+    "@types/chai": "^4.3.4",
+    "@types/js-yaml": "^4.0.5",
+    "@types/mocha": "^10.0.1",
+    "@types/sinon": "^10.0.13",
+    "chai": "^4.3.7",
+    "js-yaml": "^4.1.0",
+    "local-package-publisher": "^1.0.4",
+    "mocha": "^10.1.0",
+    "sinon": "^14.0.2",
+    "ts-mocha": "^10.0.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "@octokit/graphql": "^5.0.4"
+  }
 }
