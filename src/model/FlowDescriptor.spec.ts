@@ -1,6 +1,6 @@
 import 'mocha';
 import {expect} from "chai";
-import FlowDescriptor from './FlowDescriptor.js';
+import { FlowDescriptor } from './FlowDescriptor.js';
 
 const fdStr : string  = 'id: example_flow\n' +
     'version: 1.0\n' +
@@ -51,5 +51,9 @@ describe('The FlowDescriptor class', function () {
         let result = new FlowDescriptor(fdStr);
         expect(result).to.have.property('name');
         expect(result).to.have.property('steps').to.have.length(1);
+    })
+    it('is constructed empty', function () {
+        let result = new FlowDescriptor();
+        expect(result).to.exist;
     })
 })

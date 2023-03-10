@@ -5,7 +5,7 @@ export const parseYaml = function (service: string) {
     return yaml.load(service);
 }
 
-export default class FlowDescriptor {
+export class FlowDescriptor {
     id:             string;
     version:        number;
     name:           string;
@@ -15,29 +15,40 @@ export default class FlowDescriptor {
     review?:        Review[];
     steps:          Step[];
 
-    constructor(flow: string) {
+    constructor(flow?: string) {
 
-        const ymlObj = parseYaml(flow);
+        if (flow!=null) {
+            const ymlObj = parseYaml(flow);
 
-        this.id = ymlObj.id;
-        this.version = ymlObj.version;
-        this.name = ymlObj.name;
-        this.description = ymlObj.description;
-        this.tags = [];
-        if (ymlObj.tags != null) {
-            ymlObj.tags?.forEach(tag => {this.tags.push(tag)});
-        }
-        this.links = [];
-        if (ymlObj.links != null) {
-            ymlObj.links?.forEach(link => {this.links.push(new Link(link))})
-        }
-        this.review = [];
-        if (ymlObj.review != null) {
-            ymlObj.review?.forEach(review => {this.review.push(new Review(review))})
-        }
-        this.steps = [];
-        if (ymlObj.steps != null) {
-            ymlObj.steps.forEach(step => {this.steps.push(new Step(step))})
+
+            this.id = ymlObj.id;
+            this.version = ymlObj.version;
+            this.name = ymlObj.name;
+            this.description = ymlObj.description;
+            this.tags = [];
+            if (ymlObj.tags != null) {
+                ymlObj.tags?.forEach(tag => {
+                    this.tags.push(tag)
+                });
+            }
+            this.links = [];
+            if (ymlObj.links != null) {
+                ymlObj.links?.forEach(link => {
+                    this.links.push(new Link(link))
+                })
+            }
+            this.review = [];
+            if (ymlObj.review != null) {
+                ymlObj.review?.forEach(review => {
+                    this.review.push(new Review(review))
+                })
+            }
+            this.steps = [];
+            if (ymlObj.steps != null) {
+                ymlObj.steps.forEach(step => {
+                    this.steps.push(new Step(step))
+                })
+            }
         }
 
     }
@@ -69,9 +80,10 @@ export class Review {
 
 export class Step {
     sequence:           number;
-    description:        string;
-    producer:           Actor;
-    consumer:           Actor;
+    $ref?:              string;
+    description?:       string;
+    producer?:          Actor;
+    consumer?:          Actor;
     interaction?:       Interaction;
     return?:            Return;
     note?:              string;
@@ -79,24 +91,31 @@ export class Step {
     overrides?:         Override[];
     condition?:         Condition;
 
-    constructor(step: any) {
-        this.sequence = step.sequence;
-        this.description = step.description;
-        this.producer = new Actor(step.producer);
-        this.consumer = new Actor(step.consumer);
-        this.interaction = new Interaction(step.interaction);
-        this.return = new Return(step.return);
-        this.node = step.note;
-        this.steps = [];
-        if (step.steps != null){
-            step.steps.forEach(subStep => {this.steps.push(new Step(subStep))});
-        }
-        this.overrides = [];
-        if (step.overrides != null) {
-            step.overrides.forEach(override => {this.overrides.push(new Override(override))})
-        }
-        if (step.condition != null){
-            this.condition = new Condition(step.condition);
+    constructor(step?: any) {
+        if (step!=null) {
+            this.sequence = step.sequence;
+            this.$ref = step.$ref;
+            this.description = step.description;
+            this.producer = new Actor(step.producer);
+            this.consumer = new Actor(step.consumer);
+            this.interaction = new Interaction(step.interaction);
+            this.return = new Return(step.return);
+            this.node = step.note;
+            this.steps = [];
+            if (step.steps != null) {
+                step.steps.forEach(subStep => {
+                    this.steps.push(new Step(subStep))
+                });
+            }
+            this.overrides = [];
+            if (step.overrides != null) {
+                step.overrides.forEach(override => {
+                    this.overrides.push(new Override(override))
+                })
+            }
+            if (step.condition != null) {
+                this.condition = new Condition(step.condition);
+            }
         }
     }
 }
@@ -105,16 +124,16 @@ export class Actor {
     name:           string;
     $ref?:          string;
 
-    constructor(actor: any) {
-        this.name = actor.name;
-        this.$ref = actor.$ref;
+    constructor(actor?: any) {
+        this.name = actor?.name;
+        this.$ref = actor?.$ref;
     }
 }
 
 export class Interaction {
     $ref:           string
     endpoint:       string;
-    constructor(interaction: any) {
+    constructor(interaction?: any) {
         this.$ref = interaction?.$ref;
         this.endpoint = interaction?.endpoint;
     }
