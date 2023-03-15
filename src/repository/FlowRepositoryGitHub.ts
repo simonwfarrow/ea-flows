@@ -26,7 +26,7 @@ export default class FlowRepositoryGitHub implements FlowRepository{
             // @ts-ignore
             if (repo.repository.object!=null){
                 // @ts-ignore
-                return Promise.resolve(repo.repository.object.text);
+                return Promise.resolve(new FlowDescriptor(repo.repository.object.text));
             } else {
                 return Promise.reject("Flow not found")
             }
