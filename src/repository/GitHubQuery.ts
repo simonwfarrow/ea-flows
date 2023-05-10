@@ -1,11 +1,11 @@
 import {graphql} from "@octokit/graphql/dist-types/types";
 
-export async function getFlowDescriptors(connection: graphql, owner: string, repoName: string) {
+export async function getFlowDescriptors(connection: graphql, owner: string, repoName: string, path: string) {
 
     const repository = await connection(
-        `query getFDs($owner: String!, $name: String!) {
+        `query getFDs($owner: String!, $name: String!, $expression: String!) {
                     repository(owner: $owner, name: $name ) {
-                        object(expression: "HEAD:resources/architecture_flows/sequence/") {
+                        object(expression: $expression) {
                           ... on Tree {
                             entries {
                               name
@@ -25,7 +25,7 @@ export async function getFlowDescriptors(connection: graphql, owner: string, rep
                         }
                     }
                 }`,
-        {owner: owner, name: repoName},
+        {owner: owner, name: repoName, expression: path},
     );
     return repository;
 }

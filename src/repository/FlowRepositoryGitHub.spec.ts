@@ -16,7 +16,7 @@ describe('The Github Flow Repository', function () {
         };
         const repo = new FlowRepositoryGitHub()
         repo.getFlows(config).then(flows => {
-            expect(flows).to.have.length.above(0);
+            expect(flows).length(3);
         })
     })
     it('returns a specific flow', function () {

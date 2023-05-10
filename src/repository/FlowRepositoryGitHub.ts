@@ -4,22 +4,34 @@ import {getFlowDescriptor, getFlowDescriptors} from "./GitHubQuery.js";
 
 export default class FlowRepositoryGitHub implements FlowRepository{
 
-    getFlows(config:any): Promise<FlowDescriptor[]> {
-        return getFlowDescriptors(config.connection, config.owner, config.repo).then(repo => {
+    async getFlows(config:any): Promise<FlowDescriptor[]> {
 
-            let flows : FlowDescriptor[] = [];
+        let repo = await getFlowDescriptors(config.connection, config.owner, config.repo, "HEAD:resources/architecture_flows/sequence/");
+        let flows = await this.extractFlows(repo,config);
 
-            // @ts-ignore
-            repo.repository.object.entries.forEach(entry => {
-                if (entry.type === 'blob') {
-                    let fd = entry.object.text;
-                    flows.push(new FlowDescriptor(fd));
-                }
-            });
-            return Promise.resolve(flows);
-        });
+        return Promise.resolve(flows);
 
     }
+
+    async extractFlows(repo: any, config: any) : Promise<FlowDescriptor[]>{
+
+        let flows : FlowDescriptor[] = [];
+
+        for (const entry of repo.repository.object.entries) {
+            if (entry.type === 'blob') {
+                let fd = entry.object.text;
+                flows.push(new FlowDescriptor(fd));
+            } else {
+                if (entry.type === 'tree') {
+                    let repo1 = await getFlowDescriptors(config.connection, config.owner, config.repo, "HEAD:"+entry.path);
+                    flows = flows.concat(await this.extractFlows(repo1, config));
+                }
+            }
+        }
+
+        return Promise.resolve(flows);
+    }
+
 
     getFlow(config: any): Promise<FlowDescriptor> {
         return getFlowDescriptor(config.connection, config.owner, config.repo, config.path).then(repo => {
